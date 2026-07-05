@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Где ты теряешь внутреннюю опору?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F6F0E6;
+    --cream-deep:#EFE4D2;
+    --burgundy:#5C2233;
+    --burgundy-deep:#411828;
+    --gold:#B08D57;
+    --gold-soft:#D9C39A;
+    --ink:#2B211D;
+    --muted:#8A7A6C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:32px 20px 60px;
+    display:flex;
+    flex-direction:column;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    text-align:center;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-size:clamp(28px,7vw,38px);
+    line-height:1.15;
+    text-align:center;
+    color:var(--burgundy-deep);
+    margin:0 0 6px;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--gold);
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:14.5px;
+    max-width:440px;
+    margin:0 auto 28px;
+    line-height:1.5;
+  }
+
+  /* progress */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .progress-track{
+    flex:1;
+    height:2px;
+    background:var(--gold-soft);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--burgundy);
+    width:0%;
+    transition:width .35s ease;
+  }
+  .progress-label{
+    font-size:12px;
+    color:var(--muted);
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* card */
+  .card{
+    background:#fff;
+    border:1px solid var(--gold-soft);
+    border-radius:2px;
+    padding:30px 24px;
+    flex:1;
+  }
+  .q-text{
+    font-family:'Cormorant Garamond',serif;
+    font-size:21px;
+    font-weight:500;
+    line-height:1.4;
+    color:var(--ink);
+    margin:0 0 22px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    padding:14px 16px;
+    border:1px solid var(--cream-deep);
+    background:var(--cream);
+    border-radius:1px;
+    font-family:'Manrope',sans-serif;
+    font-size:14.5px;
+    line-height:1.45;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .option:hover{
+    border-color:var(--gold);
+    background:#fff;
+  }
+  .option:active{
+    background:var(--gold-soft);
+  }
+  .option:focus-visible{
+    outline:2px solid var(--burgundy);
+    outline-offset:1px;
+  }
+  .option.selected{
+    border-color:var(--gold);
+    background:#fff;
+  }
+
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:18px;
+  }
+  .back-btn{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:13px;
+    cursor:pointer;
+    padding:6px 0;
+    font-family:'Manrope',sans-serif;
+  }
+  .back-btn:disabled{ visibility:hidden; }
+  .back-btn:hover{ color:var(--burgundy); }
+
+  /* intro */
+  .intro-card{
+    background:#fff;
+    border:1px solid var(--gold-soft);
+    padding:30px 24px;
+    text-align:center;
+  }
+  .intro-list{
+    text-align:left;
+    max-width:340px;
+    margin:20px auto 26px;
+    font-size:14px;
+    color:var(--ink);
+    line-height:2;
+  }
+  .intro-list b{ color:var(--burgundy); }
+  .start-btn{
+    display:inline-block;
+    background:var(--burgundy);
+    color:var(--cream);
+    border:none;
+    font-family:'Manrope',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    letter-spacing:.02em;
+    padding:15px 34px;
+    border-radius:1px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .start-btn:hover{ background:var(--burgundy-deep); }
+
+  /* result */
+  .result-wrap{
+    background:#fff;
+    border:1px solid var(--gold-soft);
+    padding:34px 24px 30px;
+    text-align:center;
+  }
+  .result-eyebrow{
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .result-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(30px,8vw,40px);
+    font-weight:600;
+    color:var(--burgundy-deep);
+    margin:0 0 22px;
+    line-height:1.1;
+  }
+  #chart-holder{
+    margin:0 auto 24px;
+    width:220px;
+    height:220px;
+  }
+  .result-text{
+    font-size:15px;
+    line-height:1.65;
+    color:var(--ink);
+    text-align:left;
+    max-width:460px;
+    margin:0 auto 22px;
+  }
+  .loads-title{
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-align:left;
+    max-width:460px;
+    margin:0 auto 10px;
+  }
+  .loads{
+    text-align:left;
+    max-width:460px;
+    margin:0 auto 26px;
+    padding-left:0;
+    list-style:none;
+  }
+  .loads li{
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink);
+    padding:10px 0 10px 18px;
+    border-left:2px solid var(--gold-soft);
+    margin-bottom:8px;
+  }
+  .divider{
+    width:40px;
+    height:1px;
+    background:var(--gold);
+    margin:0 auto 22px;
+  }
+  .cta-text{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:19px;
+    color:var(--burgundy-deep);
+    max-width:420px;
+    margin:0 auto 22px;
+    line-height:1.5;
+  }
+  .cta-btn{
+    display:inline-block;
+    background:var(--burgundy);
+    color:var(--cream);
+    text-decoration:none;
+    font-family:'Manrope',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    letter-spacing:.02em;
+    padding:16px 36px;
+    border-radius:1px;
+    transition:background .15s ease;
+  }
+  .cta-btn:hover{ background:var(--burgundy-deep); }
+  .restart{
+    display:block;
+    margin:20px auto 0;
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:12.5px;
+    text-decoration:underline;
+    cursor:pointer;
+    font-family:'Manrope',sans-serif;
+  }
+
+  .screen{ display:none; }
+  .screen.active{ display:block; flex-direction:column; flex:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Где ты теряешь<br><em>внутреннюю опору?</em></h1>
+  <p class="subtitle">16 жизненных ситуаций, которые помогут увидеть, какое базовое чувство сейчас особенно нуждается во внимании. Отвечай первой реакцией, не задумываясь.</p>
+
+  <!-- INTRO -->
+  <div id="screen-intro" class="screen active">
+    <div class="intro-card">
+      <p style="font-size:14px;color:var(--muted);line-height:1.6;margin:0;">В этой диагностике мы смотрим пять базовых чувств и отдельно — насколько ты сохраняешь внутреннюю устойчивость в сложных ситуациях.</p>
+      <div class="intro-list">
+        <div><b>01</b> — Безопасность</div>
+        <div><b>02</b> — Защищённость</div>
+        <div><b>03</b> — Ценность</div>
+        <div><b>04</b> — Любовь</div>
+        <div><b>05</b> — Свобода</div>
+        <div><b>06</b> — Внутренняя устойчивость</div>
+      </div>
+      <button class="start-btn" onclick="startTest()">Посмотреть свою реакцию →</button>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div id="screen-test" class="screen">
+    <div class="progress-row">
+      <span class="progress-label" id="progress-label">1 / 16</span>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="card">
+      <p class="q-text" id="q-text"></p>
+      <div class="options" id="q-options"></div>
+    </div>
+    <div class="nav-row">
+      <button class="back-btn" id="back-btn" onclick="goBack()">← назад</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="screen">
+    <div class="result-wrap">
+      <div class="result-eyebrow">Твой результат</div>
+      <div class="result-title" id="result-title"></div>
+      <div id="chart-holder"></div>
+      <p class="result-text" id="result-text"></p>
+      <div id="loads-block"></div>
+      <div class="divider"></div>
+      <p class="cta-text" id="cta-text">Результат не описывает тебя целиком и не ставит диагноз. Он показывает реакцию, которая в напряжённых ситуациях может включаться чаще других.</p>
+      <a class="cta-btn" id="cta-btn" href="#" target="_blank" rel="noopener">Разобрать мой результат →</a>
+      <button class="restart" onclick="restartTest()">Пройти ещё раз</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Ссылки Senler — по одной на каждый результат, ведут на соответствующий шаг основного бота.
+   PWS — безопасность / защищённость / ценность / любовь / свобода / внутренняя устойчивость. */
+const SENLER_LINKS = {
+  0: "https://vk.com/app5898182_-224753072#s=3746315&force=1",
+  1: "https://vk.com/app5898182_-224753072#s=3746316&force=1",
+  2: "https://vk.com/app5898182_-224753072#s=3746319&force=1",
+  3: "https://vk.com/app5898182_-224753072#s=3746321&force=1",
+  4: "https://vk.com/app5898182_-224753072#s=3746322&force=1",
+  5: "https://vk.com/app5898182_-224753072#s=3746323&force=1"
+};
+
+const questions = [
+{q:"Ты участвовала в соревнованиях, долго готовилась, но победа досталась другой. По мнению большинства — несправедливо.",
+ options:["В следующий раз буду контролировать ситуацию","Буду чувствовать себя жертвой обстоятельств","Уступлю и подчинюсь мнению большинства","Потеряю интерес и смысл в жизни","Буду бунтовать и отстаивать своё мнение","Всё равно, я знаю, что я молодец"]},
+{q:"Ты на выпускной дискотеке, и твой молодой человек пошёл танцевать с другой. Что ты чувствуешь?",
+ options:["Чувствую гнев","Чувствую себя брошенной","Чувствую безысходность","Чувствую обиду","Чувствую себя ущербной","Чувствую себя спокойно"]},
+{q:"Ты долго искала новый рецепт, старалась, готовила, накрыла красивый ужин. Твои близкие раскритиковали и остались недовольны. Что ты чувствуешь?",
+ options:["Злость","Растерянность","Никчёмность","Обиду","Желание приготовить что-то новое и доказать, что ты умеешь","Спокойно отреагируешь и обсудишь, что лучше в следующий раз"]},
+{q:"Твой бывший парень заигрывает с твоей подругой.",
+ options:["Злюсь на обоих и хочу отомстить","Чувствую себя преданной и обрываю контакт с подругой","Чувствую, что я хуже подруги, раз ему нравится она","Чувствую себя полностью униженной","Буду нападать и брошу вызов сопернице","Чувствую себя абсолютно спокойно"]},
+{q:"Тебя попросил о помощи близкий человек, но ты сейчас не очень хорошо себя чувствуешь. Как отреагируешь?",
+ options:["Конечно помогу, я должна","Помогу, на то и нужна семья","Помогу, даже в ущерб себе","Помогу, ведь чувствую ответственность","Помогу, я привыкла всё контролировать","Скажу, что сейчас не в состоянии"]},
+{q:"Ты видишь, что другие люди ругаются. Что тебе хочется сделать?",
+ options:["Стать незаметной","Спасти слабого","Напасть и отстоять","Уйти в себя","Выйти из себя","Меня это не касается, пройду мимо"]},
+{q:"Любимый человек объявил, что вы больше не можете быть вместе. Что почувствуешь?",
+ options:["Панику","Одиночество","Никчёмность","Обиду","Безысходность","Приму его выбор без выяснения отношений"]},
+{q:"Подруга нарушает твои личные границы, ставя тебя в неудобное положение. Твои действия?",
+ options:["Промолчу, ведь мы подруги, я должна потерпеть","Взбунтуюсь и выскажу ей всё","Попрошу знакомого прийти на помощь","Уйду от разговора","Сделаю так, как она хочет","Спокойно обозначу, почему не смогу"]},
+{q:"На кассе не хватает денег, кассир зовёт менеджера «для отмены», а за тобой очередь из 10 человек. Твои действия?",
+ options:["Хочу провалиться сквозь землю","Веду себя агрессивно, они сами виноваты","Хочу, чтобы кто-то добавил до нужной суммы","Буду сильно извиняться перед всеми","Начну паниковать","Без дискомфорта дождусь менеджера"]},
+{q:"Когда тебе противоречат и не соглашаются с твоим мнением, ты:",
+ options:["Испытываешь агрессию","Чувствуешь свою слабость","Чувствуешь себя никчёмной","Будешь отстаивать своё мнение","Хочешь, чтобы услышали именно тебя","Чувствуешь себя спокойно"]},
+{q:"Ты едешь одна за рулём в другой город. Спускает колесо. Твоя реакция?",
+ options:["Мне страшно, начинаю суетиться","Чувствую себя беззащитной и беспомощной","Чувствую вину из-за своей несостоятельности","Включу погромче радио, чтобы отвлечься","Почувствую себя загнанной в угол","Дам себе время найти решение"]},
+{q:"Мужчина делает тебе комплимент и говорит, что ты невероятно сексуальная. Твоя реакция?",
+ options:["Чувствую тревогу и страх","Подумаю, что он обманывает","Засмущаюсь","Ступор","Начну злиться","Соглашусь, ведь это правда!"]},
+{q:"Твой молодой человек при тебе ругается матом. Что чувствуешь?",
+ options:["Гнев","Обиду","Желание отстаивать своё мнение","Желание проявлять агрессию","В уважительной форме попрошу так не выражаться","Пусть ругается, если нравится"]},
+{q:"Мама тебя критикует. Ты:",
+ options:["Уходишь от контакта, сворачиваешь тему","Расстраиваешься и впадаешь в уныние","Чувствуешь себя никчёмной","Чувствуешь, что тебя предаёт самый близкий человек","Соглашаешься, мама плохого не скажет","Ну и что? У каждого своё мнение"]},
+{q:"Муж встаёт на сторону свекрови в вашем с ней споре. Твоя реакция?",
+ options:["Убегу от ситуации","Буду чувствовать себя одинокой и обиженной","Испытаю чувство вины","Почувствую предательство со стороны мужа","Буду ощущать себя загнанной в угол","Спокойно отреагирую"]},
+{q:"Тебя внезапно увольняют с работы.",
+ options:["Впадаю в депрессию и переживаю за будущее","Чувствую обиду — никто не объяснил, что нужно лучше работать","Злюсь на шефа, он не оценил мой профессионализм","Чувствую обиду из-за несправедливости","Считаю, что они должны пересмотреть решение","Я полностью спокойна"]}
+];
+
+const categories = [
+ {name:"Безопасность",
+  text:"По твоим ответам чаще других может включаться реакция, связанная с безопасностью. Даже в обычных ситуациях ты можешь заранее ждать сложностей, усиливать контроль или готовиться к худшему.",
+  loads:[
+   "где ты заранее готовишься к худшему;",
+   "где пытаешься всё контролировать, чтобы снизить тревогу;",
+   "что помогает телу почувствовать: прямо сейчас опасности нет."
+  ]},
+ {name:"Защищённость",
+  text:"По твоим ответам чаще всего включается сценарий, связанный с защищённостью. Тебе может быть сложно почувствовать опору без поддержки, участия или решения со стороны другого человека.",
+  loads:[
+   "где тебе сложно почувствовать опору без поддержки, участия или решения со стороны другого человека;",
+   "где ты ждёшь, что кто-то придёт и разберётся вместо тебя;",
+   "что помогает почувствовать точку опоры внутри себя, а не снаружи."
+  ]},
+ {name:"Ценность",
+  text:"По твоим ответам особенно чувствительной выглядит тема ценности. Своё мнение легко отходит на второй план, когда рядом звучит чужое — и почти любая критика быстро превращается в «со мной что-то не так».",
+  loads:[
+   "где чужое мнение становится важнее твоего;",
+   "где ты пытаешься заслужить право быть хорошей;",
+   "где критика быстро превращается в «со мной что-то не так»."
+  ]},
+ {name:"Любовь",
+  text:"По твоим ответам чаще всего включается сценарий, связанный с темой любви. Ты можешь закрываться, обесценивать тёплое отношение или заранее ждать отвержения, чтобы не столкнуться с уязвимостью.",
+  loads:[
+   "где ты обесцениваешь тёплое отношение, которое к тебе приходит;",
+   "где проще закрыться заранее, чем рискнуть и остаться в чувствах;",
+   "что помогает оставаться в контакте с любовью, не убегая от неё."
+  ]},
+ {name:"Свобода",
+  text:"По твоим ответам особенно чувствительной выглядит тема свободы. Реакция колеблется между «бунтовать и доказывать своё» и «подчиниться» — там, где можно было бы просто остаться собой.",
+  loads:[
+   "где тебе приходится либо бунтовать, либо подчиняться, без среднего варианта;",
+   "где чужое мнение о тебе решает больше, чем твоё собственное;",
+   "что помогает оставаться собой без страха осуждения."
+  ]},
+ {name:"Внутренняя устойчивость",
+  text:"По твоим ответам ты чаще сохраняешь контакт с собой и не рушишься от чужой реакции. Это не значит, что сложных тем нет. Скорее, сейчас у тебя достаточно внутренней опоры, чтобы разбираться с ними без паники и самоуничтожения.",
+  loads:[]}
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+function startTest(){
+  show('screen-test');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const item = questions[current];
+  document.getElementById('q-text').textContent = item.q;
+  document.getElementById('progress-label').textContent = (current+1) + ' / ' + questions.length;
+  document.getElementById('progress-fill').style.width = ((current)/questions.length*100) + '%';
+  const optsWrap = document.getElementById('q-options');
+  optsWrap.innerHTML = '';
+  item.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option' + (answers[current] === idx ? ' selected' : '');
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(idx);
+    optsWrap.appendChild(btn);
+  });
+  document.getElementById('back-btn').disabled = current === 0;
+}
+
+function selectAnswer(idx){
+  answers[current] = idx;
+  if(current < questions.length - 1){
+    current++;
+    renderQuestion();
+  } else {
+    document.getElementById('progress-fill').style.width = '100%';
+    showResult();
+  }
+}
+
+function goBack(){
+  if(current > 0){
+    current--;
+    renderQuestion();
+  }
+}
+
+function restartTest(){
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  show('screen-intro');
+}
+
+function showResult(){
+  const counts = [0,0,0,0,0,0];
+  answers.forEach(a => { if(a !== null) counts[a]++; });
+  const maxCount = Math.max(...counts);
+  const leaders = counts
+    .map((count, index) => count === maxCount ? index : -1)
+    .filter(index => index !== -1);
+  let maxIdx;
+  if(leaders.length === 1){
+    maxIdx = leaders[0];
+  } else {
+    const lastAnswer = answers[answers.length - 1];
+    maxIdx = leaders.includes(lastAnswer) ? lastAnswer : leaders[0];
+  }
+  const cat = categories[maxIdx];
+
+  document.getElementById('result-title').textContent = cat.name;
+  document.getElementById('result-text').textContent = cat.text;
+
+  const loadsBlock = document.getElementById('loads-block');
+  if(cat.loads.length){
+    let html = '<div class="loads-title">Что важно начать замечать</div><ul class="loads">';
+    cat.loads.forEach(l => html += '<li>'+l+'</li>');
+    html += '</ul>';
+    loadsBlock.innerHTML = html;
+  } else {
+    loadsBlock.innerHTML = '';
+  }
+
+  document.getElementById('cta-btn').href = SENLER_LINKS[maxIdx];
+  document.getElementById('cta-text').textContent = "Результат не описывает тебя целиком и не ставит диагноз. Он показывает реакцию, которая в напряжённых ситуациях может включаться чаще других. В сообщениях разберём, как она проявляется именно в твоей жизни и почему одной силой воли её не всегда получается изменить.";
+
+  drawChart(counts, maxIdx);
+  show('screen-result');
+}
+
+function drawChart(counts, maxIdx){
+  const size = 220, cx = size/2, cy = size/2;
+  const maxCount = Math.max(...counts, 1);
+  const minR = 34, maxR = 100;
+  const labels = ['1','2','3','4','5','6'];
+  const colorActive = '#5C2233';
+  const colorInactive = '#D9C39A';
+  let svg = '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">';
+  for(let i=0;i<6;i++){
+    const r = minR + (counts[i]/maxCount)*(maxR-minR);
+    const a0 = (Math.PI*2/6)*i - Math.PI/2;
+    const a1 = (Math.PI*2/6)*(i+1) - Math.PI/2;
+    const x0 = cx + r*Math.cos(a0), y0 = cy + r*Math.sin(a0);
+    const x1 = cx + r*Math.cos(a1), y1 = cy + r*Math.sin(a1);
+    const fill = i === maxIdx ? colorActive : colorInactive;
+    const opacity = i === maxIdx ? '1' : '0.55';
+    svg += '<path d="M'+cx+' '+cy+' L'+x0+' '+y0+' A'+r+' '+r+' 0 0 1 '+x1+' '+y1+' Z" fill="'+fill+'" fill-opacity="'+opacity+'" stroke="#F6F0E6" stroke-width="1.5"/>';
+    const lx = cx + (r+16)*Math.cos(a0 + Math.PI/6);
+    const ly = cy + (r+16)*Math.sin(a0 + Math.PI/6);
+    svg += '<text x="'+lx+'" y="'+ly+'" font-size="11" fill="#8A7A6C" text-anchor="middle" font-family="Manrope, sans-serif">'+labels[i]+'</text>';
+  }
+  svg += '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#B08D57"/>';
+  svg += '</svg>';
+  document.getElementById('chart-holder').innerHTML = svg;
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>
